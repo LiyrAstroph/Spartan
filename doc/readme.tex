@@ -1,0 +1,888 @@
+\documentclass[12pt]{book}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{apjfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[colorlinks, citecolor=blue]{hyperref}
+\geometry{left=1.0in,right=1.0in}
+%\renewcommand{\bottomfraction}{0.9}
+%\renewcommand{\floatpagefraction}{0.8}
+%\renewcommand{\dblfloatpagefraction}{0.5}
+%\renewcommand{\textfraction}{0.05}
+%\renewcommand{\topfraction}{0.95}
+\renewcommand{\baselinestretch}{1.5}
+\title{Fully General Relativistic Structure and Spectrum of ADAFs}
+\begin{document}
+\author{\vspace{0.7in}Li Yan-Rong\\
+Supported by \\
+Prof. Wang Jian-Min\\
+Prof. Yuan Ye-Fei}
+\maketitle
+\tableofcontents
+\chapter{Basic Usage}
+\begin{itemize}
+ \item \texttt{ /src}: contains the source file for calculation of disk structure, intrinsic spectrum and observed spectrum;
+\item \texttt{/data}: contains the input/output data;
+\item \texttt{/doc} : the use manual.
+\end{itemize}
+
+To use the code, change directory to \texttt{ /src} , type command \texttt{make} and three executive files are produced,
+\begin{itemize}
+ \item \texttt{disk}: for disk structure;
+\item \texttt{spec}: for intrinsic spectrum;
+\item \texttt{obs}: for observed spectrum.
+\end{itemize}
+Then type \texttt{./disk} in shell will calculate the disk structure and analogically for \texttt{./spec} and 
+\texttt{./obs}.
+
+In the directory \texttt{/data}, the files are
+\begin{itemize}
+ \item \texttt{datain.txt}: the input data.
+\item \texttt{/spec}: the SED at different radius, in which the number in the file name (e.g. spec025.txt) correspond with the line number in file \texttt{rdisk.dat}.
+\item \texttt{nrows.txt}: the number of rows in \texttt{rdisk.dat}.
+\item \texttt{soltot.dat}: the solutions of all variables of ADAFs.
+\item \texttt{adaf.dat}: used for \texttt{spec}.
+\item \texttt{sol-for-spec.dat}: used for \texttt{obs}.
+\item \texttt{rdisk.dat}: used for calculation of optical depth.
+\item \texttt{spectrum.dat specobs.dat}: the intrinsic spectrum and the observed spectrum.
+\end{itemize}
+ 
+\chapter{The Structure of ADAFs}
+\section{Equation set for ADAFs}
+We adopt the geometrical units $G=c=1$. The kerr metric expanded around the equatorial plane is
+\begin{eqnarray}
+ds^2&&=-\frac{r^2\Delta}{A}dt^2+\frac{A}{r^2}(d\phi-\omega dt)^2+\frac{r^2}{\Delta}dr^2+dz^2\\
+&&=-\left(\frac{r^2\Delta}{A}-\frac{A\omega^2}{r^2}\right)dt^2-\frac{2A\omega}{r^2}dtd\phi
++\frac{A}{r^2}d\phi^2+\frac{r^2}{\Delta}dr^2+dz^2
+\end{eqnarray}
+
+Therefore
+%
+\begin{equation}
+ g_{tt}=-\left(\frac{r^2\Delta}{A}-\frac{A\omega^2}{r^2}\right),~~~
+g_{t\phi}=-\frac{A\omega}{r^2},~~~g_{\phi\phi}=\frac{A}{r^2},~~~g_{rr}=\frac{r^2}{\Delta},~~~g_{zz}=1
+\end{equation}
+%
+where
+%
+\begin{equation}
+ \Delta=r^2-2Mr+a^2,~~~A=r^4+r^2a^2+2Mra^2,~~~\omega=\frac{2Mar}{A},~~~a=\frac{J}{M}
+\end{equation}
+%
+
+The equation set are
+\begin{itemize}
+ \item Continuity equation
+%
+\begin{equation}
+ \dot M=-2\pi \Delta^{1/2} \Sigma_0\gamma_r V
+\end{equation}
+%
+
+\item Momentum equation
+%
+\begin{equation}
+\frac{\dot M}{2\pi}(L-L_{in})=rW_{\phi}^r
+\end{equation}
+%
+%
+\begin{equation}
+\gamma_r^2V\frac{dV}{dr}+\frac{1}{\mu\Sigma_{0}}\frac{dW}{dr}=-\frac{\gamma_\phi^2AM}{r^4\Delta}
+\frac{(\Omega-\Omega_K^+)(\Omega-\Omega_K^-)}{\Omega_K^+\Omega_K^-}.
+\end{equation}
+%
+
+\item Energy equation
+%
+\begin{equation}
+\frac{\dot M W_i}{2\pi r\Sigma_{0}}\frac{1}{\Gamma_i-1}\left(\frac{d\ln W_i}{dr}-
+\Gamma_i\frac{d\ln \Sigma_0}{dr}+\frac{\Gamma_i-1}{r}\right)=(1-\delta)\frac{\alpha W}{r}
+\frac{\gamma_\phi^4A^2}{r^6}\frac{d\Omega}{dr}+\Lambda_{ie}
+\end{equation}
+%
+\begin{equation}
+\frac{\dot M W_e}{2\pi r\Sigma_{0}}\frac{1}{\Gamma_e-1}\left(\frac{d\ln W_e}{dr}-
+\Gamma_e\frac{d\ln \Sigma_0}{dr}+\frac{\Gamma_e-1}{r}\right)=\delta\frac{\alpha W}{r}
+\frac{\gamma_\phi^4A^2}{r^6}\frac{d\Omega}{dr}-\Lambda_{ie}+F^{-}
+\end{equation}
+%
+\end{itemize}
+The involved variables:
+\begin{equation}
+\gamma_r=\frac{1}{\sqrt{1-V^2}},~~~~~\gamma_\phi=\sqrt{1+\frac{r^2L^2}{\mu^2\gamma_r^2A}}
+\end{equation}
+\begin{equation}
+\mu=1+\frac{W}{\Sigma_0}\left[\left(a_i+\frac{1}{\beta}\right)\frac{W_i}{W}+
+\left(a_e+\frac{1}{\beta}\right)\frac{W_e}{W}\right]
+\end{equation}
+\begin{equation}
+a_i=\frac{1}{\gamma_i-1}+\frac{2(1-\beta)}{\beta},~~~~~a_e=\frac{1}{\gamma_e-1}+\frac{2(1-\beta)}{\beta} 
+\end{equation}
+\begin{equation}
+ \gamma_i=1+\theta_i\left[\frac{3K_3(1/\theta_i)+K_1(1/\theta_i)}{4K_2(1/\theta_i)}-1\right]^{-1}
+\end{equation}
+\begin{equation}
+ \gamma_e=1+\theta_e\left[\frac{3K_3(1/\theta_e)+K_1(1/\theta_e)}{4K_2(1/\theta_e)}-1\right]^{-1}
+\end{equation}
+\begin{equation}
+ \Gamma_i=1+\left[a_i\left(1+\frac{d\ln a_i}{d\ln T_i}\right)\right]^{-1},~~~~~~
+\Gamma_e=1+\left[a_e\left(1+\frac{d\ln a_e}{d\ln T_e}\right)\right]^{-1}
+\end{equation}
+\begin{equation}
+ \Omega_K^{\pm}=\pm\frac{M^{1/2}}{r^{3/2}\pm aM^{1/2}},~~~~~
+\Omega=\omega +\frac{r^3 \Delta^{1/2} L}{\mu \gamma_r\gamma_\phi A^{3/2}}
+\end{equation}
+The vertical scale height is 
+\begin{equation}
+h^2=\frac{W}{\mu\Sigma_{0}}\frac{r^4}{(L/\mu)^2-a^2[(E/\mu)^2-1]}
+\end{equation}
+where
+\begin{equation}
+ L=\mu u_{\phi},~~~~E=-\mu u_{t},~~~\frac{u^{\phi}}{u^{t}}=\Omega
+\end{equation}
+and
+\begin{equation}
+ u_{\phi}=g_{\phi t}u^t+g_{\phi\phi}u^\phi=\left(\frac{g_{\phi t}}{\Omega}+g_{\phi\phi}\right)u^{\phi},
+~~~u_{t}=g_{tt}u^t+g_{\phi t}u^\phi=\left(\frac{g_{t t}}{\Omega}+g_{t\phi}\right)u^{\phi}
+\end{equation}
+Thus we obtain
+\begin{equation}
+ E=-\mu u_{t}=-\frac{g_{tt}+\Omega g_{t\phi}}{g_{t\phi}+\Omega g_{\phi\phi}}L
+=\frac{r^4\Delta/A^2+\omega\Omega-\omega^2}{\Omega-\omega}L
+\end{equation}
+Note that
+\begin{equation}
+ \Omega-\omega=\frac{r^3 \Delta^{1/2} L}{\mu \gamma_r\gamma_\phi A^{3/2}}
+\end{equation}
+we have
+\begin{equation}
+E=\mu\gamma_r\gamma_\phi r\frac{\Delta^{1/2}}{A^{1/2}}+\omega L
+\end{equation}
+\begin{itemize}
+ \item calculation of $VdV/dr$
+\begin{equation}
+\frac{V}{\sqrt{1-V^2}}=-\frac{\dot M}{2\pi\Delta^{1/2}\Sigma_0} 
+\end{equation}
+Since
+\begin{equation}
+ \frac{V^2}{1-V^2}=\frac{\dot M^2}{4\pi^2}\frac{1}{\Delta\Sigma_{0}^2}=B
+\end{equation}
+a simple calculation gives
+\begin{equation}
+ V^2=1-\frac{1}{1+B}
+\end{equation}
+and thereby
+\begin{eqnarray}
+2V\frac{dV}{dr}&&=\frac{1}{(1+B)^2}\frac{dB}{dr}\\
+&&=-\frac{1}{(1+B)^2}\frac{\dot M^2}{4\pi^2}\frac{1}{\Delta\Sigma_{0}}
+\left[\frac{1}{\Delta}\frac{d\Delta}{dr}+\frac{2}{\Sigma_0}\frac{d\Sigma_0}{dr}\right]\\
+&&=-\frac{2B}{(1+B)^2}\left(\frac{r-M}{\Delta}+\frac{1}{\Sigma_0}\frac{d\Sigma_0}{dr}\right)
+\end{eqnarray}
+\item calculation of $d\Omega/dr$
+\begin{equation}
+ \Omega=\omega+\frac{r^3 \Delta^{1/2} L}{\mu \gamma_r\gamma_\phi A^{3/2}},
+~~~L=\frac{2\pi rW_\phi^r}{\dot M}+L_{in},
+~~~W_\phi^r=\alpha\frac{A^{3/2}\Delta^{1/2}\gamma_\phi^3}{r^6}W
+\end{equation}
+\begin{equation}
+\frac{d\Omega}{dr}=\frac{d\omega}{dr}+\frac{2\pi\alpha}{\dot M}\frac{d}{dr}
+\left(\frac{\gamma_\phi^2\Delta W}{\mu\gamma_rr^2}\right)
++L_{in}\frac{d}{dr}\left(\frac{r^3\Delta^{1/2}}{\mu\gamma_r\gamma_\phi A^{3/2}}\right)
+\end{equation}
+\end{itemize}
+To sum up, we write down the equation set
+\begin{equation}
+\frac{dW_i}{dr} + \frac{dW_e}{dr} -\frac{\beta\mu\gamma_r^2B}{(1+B)^2}\frac{d\Sigma_0}{dr}=
+\frac{\beta\mu\gamma_r^2B\Sigma_0}{(1+B)^2}\frac{r-M}{\Delta}
+-\frac{\beta\mu\gamma_\phi^2\Sigma_0AM}{r^4\Delta}\frac{(\Omega-\Omega_K^+)(\Omega-\Omega_K^-)}{\Omega_K^+\Omega_K^-}
+\end{equation}
+%%%ion
+\begin{equation}\nonumber
+\left[\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0}
+-\frac{(1-\delta)4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}\frac{\Delta A^2W}{r^8}\right]\frac{dW_i}{dr}
+-\left[\frac{(1-\delta)4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}\frac{\Delta A^2W}{r^8}\right]\frac{dW_e}{dr}
+-\frac{\Gamma_i}{\Gamma_i-1}\frac{W_i\dot M}{\Sigma_0^2}\frac{d\Sigma_0}{dr}
+\end{equation}
+\begin{equation}
+=(1-\delta)2\pi\alpha W\frac{\gamma_\phi^4A^2}{r^6}
+\left[\frac{2\pi\alpha W}{\dot M}\frac{d}{dr}\left(\frac{\gamma_\phi^2\Delta}{\mu\gamma_rr^2}\right)
++L_{in}\frac{d}{dr}\left(\frac{r^3\Delta^{1/2}}{\mu\gamma_\phi\gamma_r A^{3/2}}\right)
++\frac{d\omega}{dr}
+\right]
+-\frac{W_i\dot M}{r\Sigma_0}+2\pi r \Lambda_{ie}
+\end{equation}
+
+%%%electron
+\begin{equation}\nonumber
+-\left[\frac{\delta4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}\frac{\Delta A^2W}{r^8}\right]\frac{dW_i}{dr}+
+\left[\frac{1}{\Gamma_e-1}\frac{\dot M}{\Sigma_0}
+-\frac{\delta4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}\frac{\Delta A^2W}{r^8}\right]\frac{dW_e}{dr}
+-\frac{\Gamma_e}{\Gamma_e-1}\frac{W_e\dot M}{\Sigma_0^2}\frac{d\Sigma_0}{dr}
+\end{equation}
+\begin{equation}
+=\delta2\pi\alpha W\frac{\gamma_\phi^4A^2}{r^6}
+\left[\frac{2\pi\alpha W}{\dot M}\frac{d}{dr}\left(\frac{\gamma_\phi^2\Delta}{\mu\gamma_rr^2}\right)
++L_{in}\frac{d}{dr}\left(\frac{r^3\Delta^{1/2}}{\mu\gamma_\phi\gamma_r A^{3/2}}\right)
++\frac{d\omega}{dr}
+\right]
+-\frac{W_e\dot M}{r\Sigma_0}+2\pi r (F^--\Lambda_{ie})
+\end{equation}
+
+Following we substitute 
+\begin{equation}
+M=r_g=\frac{GM}{c^2},
+\end{equation}
+\begin{equation}
+ \Delta=1-\frac{2r_g}{r}+\frac{a^2}{r^2},~~~A=1+\frac{a^2}{r^2}+\frac{2r_ga^2}{r^3},~~~\omega=\frac{2r_ga}{r^3A}
+\end{equation}
+The equations set will be
+\begin{equation}
+\frac{dW_i}{dr} + \frac{dW_e}{dr} -\frac{\beta\mu\gamma_r^2B}{(1+B)^2}\frac{d\Sigma_0}{dr}=
+\frac{\beta\mu\gamma_r^2B\Sigma_0}{(1+B)^2}\frac{r-r_g}{r^2\Delta}
+-\frac{\beta\mu\gamma_\phi^2\Sigma_0Ar_g}{r^2\Delta}\frac{(\Omega-\Omega_K^+)(\Omega-\Omega_K^-)}{\Omega_K^+\Omega_K^-}
+\end{equation}
+%%%ion
+\begin{equation}\nonumber
+\left[\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0}
+-\frac{(1-\delta)4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}r^2\Delta A^2W\right]\frac{dW_i}{dr}
+-\left[\frac{(1-\delta)4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}r^2\Delta A^2W\right]\frac{dW_e}{dr}
+-\frac{\Gamma_i}{\Gamma_i-1}\frac{W_i\dot M}{\Sigma_0^2}\frac{d\Sigma_0}{dr}
+\end{equation}
+\begin{equation}
+=(1-\delta)2\pi\alpha W\gamma_\phi^4A^2r^2
+\left[\frac{2\pi\alpha W}{\dot M}\frac{d}{dr}\left(\frac{\gamma_\phi^2\Delta}{\mu\gamma_r}\right)
++L_{in}\frac{d}{dr}\left(\frac{\Delta^{1/2}}{\mu\gamma_\phi\gamma_r r^2A^{3/2}}\right)
++\frac{d\omega}{dr}
+\right]
+-\frac{W_i\dot M}{r\Sigma_0}+2\pi r \Lambda_{ie}
+\end{equation}
+
+%%%electron
+\begin{equation}\nonumber
+-\left[\frac{\delta4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}r^2\Delta A^2W\right]\frac{dW_i}{dr}+
+\left[\frac{1}{\Gamma_e-1}\frac{\dot M}{\Sigma_0}
+-\frac{\delta4\pi^2\alpha^2\gamma_\phi^6}{\mu\gamma_r\beta\dot M}r^2\Delta A^2W\right]\frac{dW_e}{dr}
+-\frac{\Gamma_e}{\Gamma_e-1}\frac{W_e\dot M}{\Sigma_0^2}\frac{d\Sigma_0}{dr}
+\end{equation}
+\begin{equation}
+=\delta2\pi\alpha W\gamma_\phi^4A^2r^2
+\left[\frac{2\pi\alpha W}{\dot M}\frac{d}{dr}\left(\frac{\gamma_\phi^2\Delta}{\mu\gamma_r}\right)
++L_{in}\frac{d}{dr}\left(\frac{\Delta^{1/2}}{\mu\gamma_\phi\gamma_r r^2A^{3/2}}\right)
++\frac{d\omega}{dr}
+\right]
+-\frac{W_e\dot M}{r\Sigma_0}+2\pi r (F^--\Lambda_{ie})
+\end{equation}
+where
+\begin{equation}
+ \frac{d\Delta}{dr}=\frac{2r_g}{r^2}-\frac{2a^2}{r^3},
+~~~\frac{dA}{dr}=-\frac{2a^2}{r^3}-\frac{6r_ga^2}{r^4}
+\end{equation}
+\begin{equation}
+ \frac{d}{dr}\left(\frac{\Delta^{1/2}}{r^2A^{3/2}}\right)=
+\frac{\Delta^{1/2}}{r^2A^{3/2}}
+\left(\frac{1}{2\Delta}\frac{d\Delta}{dr}-\frac{2}{r}-\frac{3}{2A}\frac{dA}{dr}\right)
+\end{equation}
+\begin{equation}
+ \frac{d\omega}{dr}=-\frac{2r_ga}{r^3A}\left(\frac{3}{r}+\frac{1}{A}\frac{dA}{dr}\right)
+\end{equation}
+
+The solution are
+\begin{equation}
+ \frac{d\Sigma_0}{dr}=\frac{(c_3-a_{31}c_1)(a_{22}-a_{21})-(c_2-a_{21}c_{1})(a_{32}-a_{31})}
+{(a_{33}-a_{31}a_{13})(a_{22}-a_{21})-(a_{23}-a_{21}a_{13})(a_{32}-a_{31})}=S
+\end{equation}
+\begin{equation}
+ \frac{dW_i}{dr}=\frac{a_{22}c_1-c_2}{a_{22}-a_{21}}
+-\frac{a_{22}a_{13}-a_{23}}{a_{22}-a_{21}}S
+\end{equation}
+\begin{equation}
+\frac{dW_e}{dr}=\frac{c_2-a_{21}c_1}{a_{22}-a_{21}}-\frac{a_{23}-a_{21}a_{13}}{a_{22}-a_{21}}S
+\end{equation}
+Once the solution for $\Sigma_0$, $W_e$ and $W_i$ are obtained, 
+\begin{equation}
+ B=\frac{\dot M^2}{4\pi^2}\frac{1}{r^2\Delta\Sigma_0^2},~~~~~V=\sqrt{\frac{B}{1+B}},~~~~
+\gamma_r=\frac{1}{\sqrt{1-V^2}}
+\end{equation}
+\begin{equation}
+ L=L_{in}+\frac{2\pi r^2}{\dot M}\alpha A^{3/2}\Delta^{1/2}W\gamma_\phi^3,~~~~~
+\gamma_\phi=\sqrt{1+\frac{L^2}{\mu^2\gamma_r^2r^2A}}
+\end{equation}
+%
+\begin{equation}
+T_i=\frac{\mu_iW_im_{H}}{k\Sigma_0},~~~T_e=\frac{\mu_eW_em_{H}}{k\Sigma_0}
+\end{equation}
+%
+%
+\section{The boundary conditions}
+\begin{equation}
+\Omega=0.8\Omega_{K}
+\end{equation}
+\begin{equation}
+ T_i=T_e=0.1T_{vir},~~~~T_{vir}=(\gamma-1)\frac{GMm_{H}}{kr}
+\end{equation}
+%
+\section{Dimension units}
+\begin{equation}
+r: R_s,~~~L:cR_s,~~~\Omega:\frac{c}{R_s},~~~\dot M: \dot M_{Edd},~~~\Sigma:\frac{\dot M_{Edd}}{cR_s}
+\end{equation}
+\begin{equation}
+W:\frac{\dot M_{Edd}c}{R_s},~~~Q_{rad}:\frac{\dot M_{Edd}c^2}{R_s^2}
+\end{equation}
+%
+\section{The transonic point}
+\begin{equation}
+ a_{22}-a_{21}=-\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0},~~~~~~
+a_{32}-a_{31}=\frac{1}{\Gamma_e-1}\frac{\dot M}{\Sigma_0}
+\end{equation}
+\begin{equation}
+a_{33}-a_{31}a_{13}=-\frac{\Gamma_e}{\Gamma_e-1}\frac{\dot M W_e}{\Sigma_0^2}+\delta Y \frac{\beta\mu\gamma_r^2B}{(1+B)^2}
+\end{equation}
+\begin{equation}
+a_{23}-a_{21}a_{13}=-\frac{\Gamma_i}{\Gamma_i-1}\frac{\dot M W_i}{\Sigma_0^2} +
+\left[\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0} +(1-\delta) Y\right] \frac{\beta\mu\gamma_r^2B}{(1+B)^2}
+\end{equation}
+Then we have
+\begin{eqnarray}
+ \mathcal{D}=&&(a_{33}-a_{31}a_{13})(a_{22}-a_{21})-(a_{23}-a_{21}a_{13})(a_{32}-a_{31})\nonumber\\
+=&&-\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0}\left[-\frac{\Gamma_e}{\Gamma_e-1}\frac{\dot M W_e}{\Sigma_0^2}+\delta Y \frac{\beta\mu\gamma_r^2B}{(1+B)^2}\right]\nonumber\\
+&&-\frac{1}{\Gamma_e-1}\frac{\dot M}{\Sigma_0}\left\{
+-\frac{\Gamma_i}{\Gamma_i-1}\frac{\dot M W_i}{\Sigma_0^2} +
+\left[\frac{1}{\Gamma_i-1}\frac{\dot M}{\Sigma_0} +(1-\delta) Y\right] \frac{\beta\mu\gamma_r^2B}{(1+B)^2}
+\right\}
+\end{eqnarray}
+where
+\begin{equation}
+ \beta\mu\gamma_r^2BY=-\frac{\alpha^2\gamma_r\gamma_\phi^6A^2 W\dot M}{\Sigma_0^2}
+\end{equation}
+\begin{eqnarray}
+-\frac{\Sigma_0}{\dot M}\mathcal{D}=&&-\frac{1}{(\Gamma_i-1)(\Gamma_e-1)}\left(\Gamma_i\frac{W_i}{W}+\Gamma_e\frac{W_e}{W}\right)
+\frac{\dot M W}{\Sigma_0^2}\nonumber\\
+&&-\left(\frac{\delta}{\Gamma_i-1}+\frac{1-\delta}{\Gamma_e-1}\right)\frac{\alpha^2\gamma_r\gamma_\phi^6A^2}{(1+B)^2}
+\frac{\dot M W}{\Sigma_0^2}\nonumber\\
+&&+\frac{1}{(\Gamma_i-1)(\Gamma_e-1)}\frac{\beta\mu\gamma_r^4}{(1+B)^2}\frac{B}{\gamma_r^2}\frac{\dot M}{\Sigma_0}\nonumber\\
+=&&\frac{\dot M}{\Sigma_0}[b_1V^2-(b_2+b_3)c_s^2]
+\end{eqnarray}
+Therefore, the transonic point satisfies,
+\begin{equation}
+\frac{V^2}{c_s^2}=\frac{b_2+b_3}{b_1}
+\end{equation}
+where
+\begin{equation}
+ b_1=\frac{1}{(\Gamma_i-1)(\Gamma_e-1)}\frac{\beta\mu\gamma_r^4}{(1+B)^2}
+\end{equation}
+\begin{equation}
+ b_2=\frac{1}{(\Gamma_i-1)(\Gamma_e-1)}\left(\Gamma_i\frac{W_i}{W}+\Gamma_e\frac{W_e}{W}\right)
+\end{equation}
+\begin{equation}
+b_3=\left(\frac{\delta}{\Gamma_i-1}+\frac{1-\delta}{\Gamma_e-1}\right)\frac{\alpha^2\gamma_r\gamma_\phi^6A^2}{(1+B)^2}
+\end{equation}
+\section{Comparison}
+
+The differences of equation set under the Newtonian theory and General relativity theory. 
+\begin{enumerate}
+ \item Continuity equation.\\
+Newronian:
+\begin{equation}
+\dot M=-2\pi r \Sigma v_r
+\end{equation}
+GR:\\
+\begin{equation}
+ \dot M=-2\pi \Delta^{1/2} \Sigma\gamma_r V
+\end{equation}
+
+In the Newtonian approxiamtion, $\Delta=r^2-2Mr+a^2\sim r^2$, $\gamma_r\sim 1$, the above equation will be
+\begin{equation}
+\dot M=-2\pi r\Sigma V.
+\end{equation}
+\item Radial momentum equation.\\
+Newtonian:
+\begin{equation}
+v_r\frac{dv_r}{dr}+\frac{1}{\Sigma}\frac{dW}{dr}=r(\Omega^2-\Omega_K^2)-\frac{W}{\Sigma}\frac{d\ln\Omega_k}{dr}
+\end{equation}
+GR:
+\begin{equation}
+\gamma_r^2V\frac{dV}{dr}+\frac{1}{\mu\Sigma}\frac{dW}{dr}=-\frac{\gamma_\phi^2AM}{r^4\Delta}
+\frac{(\Omega-\Omega_K^+)(\Omega-\Omega_K^-)}{\Omega_K^+\Omega_K^-}.
+\end{equation}
+In the Newtonian approxiamtion, $\gamma_r\sim 1$, $\mu\sim 1$, $A=r^4+r^2a^2+2Mra^2\sim r^4$, and 
+\begin{equation}
+\Omega_K^+=-\Omega_K^-=\frac{M^{1/2}}{r^{3/2}}
+\end{equation}
+the above equation will
+be
+\begin{equation}
+V\frac{dV}{dr}+\frac{1}{\Sigma}\frac{dW}{dr}=r(\Omega^2-\Omega_K^2)
+\end{equation}
+\item Azimuthal momentum equation.\\
+Newtonian:
+\begin{equation}
+\frac{\dot M}{2\pi}(L-L_{in})=r^2\alpha W.
+\end{equation}
+GR:
+\begin{equation}
+\frac{\dot M}{2\pi}(L-L_{in})=\frac{A^{3/2}\Delta^{1/2}\gamma_\phi^3}{r^5}\alpha W
+\end{equation}
+In the Newtonian approxiamtion,
+\begin{equation}
+\frac{\dot M}{2\pi}(L-L_{in})=r^2\alpha W.
+\end{equation}
+\item Energy equation.\\
+Newtonian:
+\begin{equation}
+\frac{\dot M W_i}{\Sigma}\left[\frac{1}{\gamma-1}\frac{d\ln W_i}{dr}
+-\frac{\gamma}{\gamma-1}\frac{d\ln\Sigma}{dr}+\frac{d\ln H}{dr}\right]
+=2\pi r^2\alpha W\frac{d\Omega}{dr}+2\pi r\Lambda_{ie}
+\end{equation}
+\begin{equation}
+ \frac{d\Omega}{dr}=\frac{2\pi \alpha}{\dot M}\frac{dW}{dr}-\frac{2L_{in}}{r^3}
+\end{equation}
+
+GR:
+\begin{equation}
+\frac{\dot M W_i}{\Sigma}\left[\frac{1}{\Gamma_i-1}\frac{d\ln W_i}{dr}-\frac{\Gamma_i}{\Gamma_i-1}\frac{d\ln \Sigma}{dr}+\frac{1}{r}\right]=2\pi \alpha W\frac{\gamma_\phi^4A^2}{r^6}\frac{d\Omega}{dr}+2\pi r\Lambda_{ie}
+\end{equation}
+\begin{equation}
+ \frac{d\Omega}{dr}=\frac{2\pi\alpha\gamma_\phi^2\Delta}{\mu\gamma_r\dot M r^2}\frac{dW}{dr}
++\frac{2\pi \alpha W}{\dot M}\frac{d}{dr}\left(\frac{\gamma_\phi^2\Delta}{\mu\gamma_r r^2}\right)
++L_{in}\frac{d}{dr}\left(\frac{r^3\Delta^{1/2}}{\mu\gamma_r\gamma_\phi A^{3/2}}\right)
++\frac{d\omega}{dr}
+\end{equation}
+
+\end{enumerate}
+
+\chapter{The Spectrum of ADAFs}
+\section{Comptonization}
+\subsection{Klein-Nishina formular}
+In the electron rest frame,
+\begin{equation}
+\sigma_{KN}=\frac{3}{8}\sigma_T\left(\frac{\nu}{\nu_i}\right)^2
+\left(\frac{\nu}{\nu_i}+\frac{\nu_i}{\nu}-1+\alpha^2\right),
+\end{equation}
+where $\alpha$ is cosine of the scattering angle.
+Now for a motive electron, using coordinate conversion formular in the special relativitiy can
+easily obtains,
+\begin{equation}
+\sigma_{KN}=\frac{3}{8}\sigma_T\left(\frac{x'}{x}\right)^2
+\left(\frac{x'}{x}+\frac{x}{x'}-1+\alpha^2\right),
+\end{equation}
+where $x=\gamma\omega'(1-\beta\mu),x'=x/[1+(1-\alpha)x]$. Keep in mind that $\alpha$ in equ (2)
+is still defined in the electron rest frame while $\omega'$ is energy of the incoming photon 
+in the lab frame. The energy of outgoing photon reads,
+\begin{equation}
+\omega=\frac{\gamma[\gamma(1-\beta\mu)+\gamma\beta\cos\theta(\mu-\beta)+\beta\sin\theta
+(1-\mu^2)^{1/2}\cos\phi}{1+\gamma(1-\beta\mu)(1-\cos\theta)\omega'}\omega'
+\end{equation} 
+\subsection{Scattering rate}
+The angle-averaged scattering rate is given by
+\begin{equation}
+R(\omega,\gamma)=c\int_{-1}^{1}\frac{d\mu}{2}(1-\beta\mu)\int_{-1}^{1}d\alpha\sigma_{KN}
+\end{equation}
+Standard asympotic forms for the rate R are,
+\begin{itemize}
+\item $\gamma\omega<<1$
+
+\begin{equation}
+R(\omega,\gamma)=c\sigma_T\left[1-\frac{2\gamma\omega}{3}(3+\beta^2)\right]
+\end{equation}
+\item $\gamma\omega>>1$
+\begin{equation}
+R(\omega,\gamma)=\frac{3c\sigma_T}{8\gamma\omega}
+\left\{\left[1-\frac{2}{\gamma\omega}-\frac{2}{(\gamma\omega)^2}\right]\ln(1+\gamma\omega)
++\frac{1}{2}-\frac{4}{\gamma\omega}-\frac{1}{2(1+2\gamma\omega)^2}\right\}
+\end{equation}
+
+\end{itemize}
+\subsection{Mean scattered photon energy}
+\begin{equation}
+\langle\omega\rangle(\omega',\gamma)=\frac{c}{R(\omega',\gamma)}\int_{-1}^{1}\frac{d\mu}{2}(1-\beta\mu)
+\int_{-1}^{1}d\alpha\omega\sigma_{KN}
+\end{equation}
+\subsection{Dispersion about $\langle\omega\rangle$}
+\begin{equation}
+\langle\omega^2\rangle(\omega',\gamma)=\frac{c}{R(\omega',\gamma)}\int_{-1}^{1}\frac{d\mu}{2}(1-\beta\mu)
+\int_{-1}^{1}d\alpha\omega^2\sigma_{KN}
+\end{equation}
+where
+\begin{equation}
+\omega^2=\frac{\gamma^2\omega^2\{[\gamma(1-\beta\mu)+\gamma\beta\alpha(\mu-\beta)]^2
++\frac{1}{2}\beta^2(1-\alpha^2)(1-\beta^2)\}}{[1+\gamma(1-\beta\mu)(1-\alpha)\omega]^2}
+\end{equation}
+The dispersion is then given by
+\begin{equation}
+\langle\Delta\omega^2\rangle=\langle\omega^2\rangle-\langle\omega\rangle^2
+\end{equation}
+\subsection{Scattered-photon distribution}
+\begin{equation}
+P(\omega;\omega',\gamma)=\frac{1}{2D(\omega',\gamma)}H[D(\omega',\gamma)-
+|\omega-\langle\omega\rangle|]
+\end{equation}
+where $H(x)$ is the Heaviside function, and $D(\omega',\gamma)$ is defined as
+\begin{equation}
+D(\omega',\gamma)=\mathrm{min}\{[\sqrt{3\langle\Delta\omega^2\rangle},
+(\langle\omega\rangle-\omega_{min})\}
+\end{equation}
+
+\subsection{Kinetic equation}
+\begin{equation}
+\frac{dn(\omega)}{dt}=-n(\omega)\int d\gamma N(\gamma)R(\omega,\gamma)+\int\int d\omega'd\gamma
+P(\omega;\omega',\gamma)R(\omega',\gamma)N(\gamma)n(\omega')
+\end{equation}
+Acctually, in the calculation we only handle the second integeration,
+\begin{eqnarray}
+\frac{dn(\omega)}{dt}&&=\int\int d\omega'd\gamma
+P(\omega;\omega',\gamma)R(\omega',\gamma)N(\gamma)n(\omega')\nonumber\\
+&&=(\ln10)^2\int\int d\log\omega'd\log\gamma
+P(\omega;\omega',\gamma)R(\omega',\gamma)N(\gamma)n(\omega')\omega'\gamma
+\end{eqnarray}
+For simplicity, we take $dt=H/c$, consequently,
+\begin{eqnarray}
+n(\omega)&&=(\ln10)^2\frac{H}{c}\int\int d\log\omega'd\log\gamma
+P(\omega;\omega',\gamma)R(\omega',\gamma)N_e(\gamma)n(\omega')\omega'\gamma\\
+&&=(\ln10)^2N_{e}H\sigma_T\int\int d\log\omega'd\log\gamma
+P(\omega;\omega',\gamma)\frac{R(\omega',\gamma)}{c\sigma_T}
+\frac{N(\gamma)}{N_e}n(\omega')\omega'\gamma\\
+&&=(\ln10)^2\tau_e\int\int d\log\omega'd\log\gamma
+P(\omega;\omega',\gamma)\frac{R(\omega',\gamma)}{c\sigma_T}
+\frac{N(\gamma)}{N_e}n(\omega')\omega'\gamma
+\end{eqnarray}
+\subsection{Electron distribution}
+The relativistic Maxwell-Boltzmann distribution is gien by (\"{O}zel et al 2000)
+\begin{equation}
+N(\gamma)=N_{th}\gamma^2\beta
+\frac{\exp\left(-\gamma/\theta_e\right)}{\theta_e K_2(1/\theta_e)}
+\end{equation}
+\section{Radiation mechanisms}
+\subsection{Synchrotron emission}
+\begin{eqnarray}
+\chi_{syn}=4.43\times10^{-30}\frac{4\pi n_e\nu}{K_2(1/\theta_e)}
+I\left(\frac{4\pi m_ec\nu}{3eB\theta_e^2}\right)
+\end{eqnarray}
+where
+\begin{eqnarray}
+I(x)=\frac{4.0505}{x^{1/6}}\left(1+\frac{0.4}{x^{1/4}}+\frac{0.5316}{x^{1/2}}\right)
+\exp(-1.8899x^{1/3})
+\end{eqnarray}
+\subsection{Bremstralung emission}
+\begin{eqnarray}
+\chi_{br}=q_{br}^{-}G\exp\left(\frac{h\nu}{kT_e}\right)
+\end{eqnarray}
+where $G$ is the Gaunt factor, $q_{br}^{-}$ is the bremsstrahlung emission per unit volume
+, which reads
+\begin{eqnarray}
+q_{br}^{-}=1.48\times10^{-22}n_e^2F(\theta)
+\end{eqnarray}
+\begin{eqnarray}
+F(\theta)&&=4\left(\frac{2\theta_e}{\pi^3}\right)^{1/2}(1+1.781\theta_e^{1.34})
++1.73\theta_e^{3/2}(1+1.1\theta_e+\theta_e^2-1.25\theta_e^{5/2})\qquad\theta_e<1\nonumber\\
+&&=\left(\frac{9\theta_e}{2\pi}\right)[\ln(0.48+1.123\theta_e)+1.5]
++2.30\theta_e(\ln1.123\theta_e+1.28)\qquad\theta_e>1
+\end{eqnarray}
+Gaunt factor is
+\begin{equation}
+G=\frac{h}{kT_e}\left(\frac{3}{\pi}\frac{kT_e}{h\nu}\right)^{1/2}\qquad \frac{kT_e}{h\nu}<1
+\end{equation}
+\begin{equation}
+G=\frac{h}{kT_e}\frac{\sqrt{3}}{\pi}\ln\left(\frac{4}{\xi}\frac{kT_e}{h\nu}\right)^{1/2}
+\qquad \frac{kT_e}{h\nu}>1
+\end{equation}
+\subsection{Compton scattering}
+The energy enhancement factor $\eta$ is
+\begin{equation}
+ \eta=\exp[s(A-1)][1-P(j_m+1,As)]+\eta_{max}P(j_m+1,s)
+\end{equation}
+where $P$ is the incomplete gamma function and
+\begin{equation}
+ A=1+4\theta_e+16\theta_e^2,~~~~~s=\tau_{es}+\tau_{es}^2
+\end{equation}
+\begin{equation}
+ \eta_{max}=\frac{3kT_e}{h\nu},~~~~~~~~~~j_m=\frac{\ln\eta_{max}}{\ln A},
+~~~~~~~~~~\tau_{es}=2n_e\sigma_TH
+\end{equation}
+With the energy enhancement factor $\eta$, the local radiative cooling rate $Q_{rad}^{-}$ is given by
+\begin{equation}
+Q_{rad}^{-}=\int d\nu 2\eta F_\nu
+\end{equation}
+
+\section{ADAF model}
+\subsection{Self-simular solution}
+\begin{eqnarray}
+\begin{array}{c}
+v=-2.12\times 10^10\alpha c_1r^{-1/2} ~\mathrm{cm~s^{-1}}\\
+\Omega=7.19\times 10^4c_2 m^{-1}r^{-3/2} ~\mathrm{s^{-1}}\\
+c_s^2=4.50\times 10^{20}c_3r^{-1} ~\mathrm{cm ~s^{-1}}\\
+\rho=3.79\times 10^{-5}\alpha^{-1}c_1^{-1}c_3^{-1/2}m^{-1}\dot{m}r^{-3/2} ~\mathrm{g ~cm^{-3}}\\
+p=1.71\times 10^{16}\alpha^{-1}c_1^{-1}c_3^{1/2}m^{-1}\dot{m}r^{-5/2}~\mathrm{g~ cm^{-1}~s^{-2}}\\
+q^+=1.84\times 10^{21}\epsilon'c_3^{1/2}m^{-2}\dot{m}r^{-4}~\mathrm{ergs~ cm^{-3}~s^{-1}}\\
+\tau_{es}=2n_e\sigma_TH=12.4\alpha^{-1}c_1^{-1}\dot{m}r^{-1/2}
+\end{array}
+\end{eqnarray}
+\subsection{Global structure}
+\subsection{Radiation transfer}
+\begin{equation}
+F_\nu=\frac{2\pi}{\sqrt{3}}B_\nu[1-\exp(-2\sqrt{3}\tau^{*}_\nu)]
+\end{equation}
+\begin{equation}
+\tau^*_\nu=\frac{\sqrt{\pi}}{2}\kappa_\nu(0)H
+\end{equation}
+
+\begin{equation}
+\kappa_\nu=\frac{\chi_\nu}{4\pi B_\nu}=\frac{\chi_{\nu,syn}+\chi_{\nu,br}}{4\pi B_\nu}
+\end{equation}
+
+\begin{equation}
+B_\nu=\frac{2h\nu^3}{c^2}\frac{1}{\exp(h\nu/kT)-1}
+\end{equation}
+
+\chapter{The ray tracing method}
+
+\section{Jacobian Elliptic Function}
+We denote $F(\phi, k)$ as the Incomplete elliptic integral of first kind.
+\begin{equation}
+sn^{-1}(\sin\phi|k^2)=F(\phi,k)
+\end{equation}
+\begin{equation}
+cn^{-1}(\cos\phi| k^2)=F(\phi,k)
+\end{equation}
+\begin{equation}
+tn^{-1}(\tan\phi|k^2)=F(\phi,k)
+\end{equation}
+%%
+%%
+\section{Integrals}
+\begin{equation}
+R(r)=r^4+(a^2-\lambda^2-Q)r^2+2[Q+(\lambda-a)^2]r-a^2Q
+\end{equation}
+\begin{equation}
+\Theta(\mu)=Q+(a^2-\lambda^2-Q)\mu^2-a^2\mu^4
+\end{equation}
+\subsection{$r$-component}
+The four roots for $R(r)=0$ are
+\begin{equation}
+ r_a=\frac{1}{2}N -\frac{1}{2}\sqrt{-M+2D-4C/N}
+\end{equation}
+\begin{equation}
+ r_b=\frac{1}{2}N +\frac{1}{2}\sqrt{-M+2D-4C/N}
+\end{equation}
+\begin{equation}
+ r_c=-\frac{1}{2}N -\frac{1}{2}\sqrt{-M+2D+4C/N}
+\end{equation}
+\begin{equation}
+ r_d=-\frac{1}{2}N +\frac{1}{2}\sqrt{-M+2D+4C/N}
+\end{equation}
+where
+\begin{equation}
+ C=(a-\lambda)^2+Q,~~~~~D=\frac{2}{3}(Q+\lambda^2-a^2)
+\end{equation}
+\begin{equation}
+ E=\frac{9}{4}D^2-12a^2Q,~~~~~F=-\frac{27}{4}D^3-108a^2QD+108C^2
+\end{equation}
+\begin{equation}
+ M=\frac{1}{3}\left(\frac{F-\sqrt{F^2-4E^3}}{2}\right)^{1/3}
++\frac{1}{3}\left(\frac{F+\sqrt{F^2-4E^3}}{2}\right)^{1/3}
+\end{equation}
+\begin{equation}
+N=\sqrt{M+D}
+\end{equation}
+\begin{enumerate}
+ \item Case I: four real roots (Byrd \& Friedman 1954, eq [258.00]).\\
+We denote the four real roots by $r_1$, $r_2$, $r_3$ and $r_4$, with $r_1\geq r_2\geq r_3 \geq r_4$.
+\begin{eqnarray}
+\int_{r_1}^{r}\frac{dr}{\sqrt{R(r)}}&&=\int_{r_1}^{r}\frac{dr}{\sqrt{(r-r_1)(r-r_2)(r-r_3)(r-r_4)}}\\
+&&=\frac{2}{\sqrt{(r_1-r_3)(r_2-r_4)}}sn^{-1}\left(\left.\sqrt{\frac{(r_2-r_4)(r-r_1)}{(r_1-r_4)(r-r_2)}}\right|m_4\right)
+\end{eqnarray}
+where
+\begin{equation}
+ m_4=\frac{(r_1-r_4)(r_2-r_3)}{(r_1-r_3)(r_2-r_4)}
+\end{equation}
+
+\item Case II: two real roots and two complex roots (Byrd \& Friedman 1954, eq [260.00]).\\
+We asume two complex roots are $r_1$ and $r_2$ ($r_1=\overline{r_2} $), two real roots are $r_3$ and $r_4$ with $r_3>r_4$.
+\begin{eqnarray}
+\int_{r_1}^{r}\frac{dr}{\sqrt{R(r)}}&&=\int_{r_1}^{r}\frac{dr}{\sqrt{(r-r_1)(r-\overline{r_1})(r-r_3)(r-r_4)}}\\
+&&=\frac{2}{\sqrt{AB}}cn^{-1}\left[\left.\sqrt{\frac{(A-B)r+r_3A-r_4A}{(A+B)r-r_3A-r_4A}}\right|m_2\right]
+\end{eqnarray}
+where
+\begin{equation}
+ u=\frac{r_1+\overline{r_1}}{2}~~~~~~v^2=-\frac{(r_1-\overline{r_1})^2}{4}
+\end{equation}
+%
+\begin{equation}
+ A^2=(r_3-u)^2+v^2,~~~~~~~B^2=(r_4-u)^2+v^2
+\end{equation}
+\begin{equation}
+m_2=\frac{(A+B)^2-(r_3-r_4)^2}{4AB}
+\end{equation}
+%%
+%%
+\item Case III: four complex roots (Byrd \& Friedman 1954, eq [267.00]).\\
+The four complex roots are $r_1$, $r_2$, $r_3$ and $r_4$ ( $r_1=\overline{r_2} $, $r_3=\overline{r_4} $ ). We introduce denotations:
+\begin{equation}
+u_1=\frac{r_1+\overline{r_1}}{2}~~~~~v_1^2=-\frac{(r_1-\overline{r_1})^2}{4}~~~~~
+u_2=\frac{r_3+\overline{r_3}}{2}~~~~~v_2^2=-\frac{(r_3-\overline{r_3})^2}{4}
+\end{equation}
+\begin{equation}
+A^2=(u_1-u_2)^2+(v_1+v_2)^2~~~~~~~B^2=(u_1-u_2)^2+(v_1-v_2)^2
+\end{equation}
+\begin{equation}
+g_1^2=\frac{4v_1^2-(A-B)^2}{(A+B)^2-4v_1^2}~~~~~~~~r_{0}=u_1-v_1*g_1
+\end{equation}
+%
+%
+\begin{eqnarray}
+\int_{r_0}^{r}\frac{dr}{\sqrt{R(r)}}&&=\int_{r_0}^{r}\frac{dr}{\sqrt{(r-r_1)(r-\overline{r_1})(r-r_3)(r-\overline{r_3})}}\\
+&&=\frac{2}{A+B}tn^{-1}\left(\left.\frac{r-u_1+v_1g_1}{v_1+g_1u_1-g_1r}\right|m_c\right)
+\end{eqnarray}
+where
+\begin{equation}
+m_c=\frac{4AB}{(A+B)^2}
+\end{equation}
+\end{enumerate}
+
+\subsection{$\theta$-component}
+\begin{enumerate}
+ \item  $Q\geq0$ (Byrd \& Friedman 1954, eq [213.00])
+%
+\begin{equation}
+\Theta(\mu)=a^2(\mu_{-}^2+\mu^2)(\mu_{+}^2-\mu^2)~~~~( 0\leq \mu^2 \leq \mu_+^2)
+\end{equation}
+%
+\begin{equation}
+ \mu_{\pm}^2=\frac{1}{2a^2}\left\{\left[\left(\lambda^2+Q-a^2\right)^2+4a^2Q\right]^{1/2}
+\mp \left(\lambda^2+Q-a^2\right)\right\}
+\end{equation}
+%
+\begin{equation}
+\int_{\mu}^{\mu_{+}}\frac{d\mu}{\sqrt{\Theta(\mu)}}
+=\frac{1}{\sqrt{a^2(\mu_{+}^2+\mu_{-}^2)}}cn^{-1}\left(\left.\frac{\mu}{\mu_+}\right|m_\mu\right)
+\end{equation}
+%
+where
+\begin{equation}
+ m_\mu=\frac{\mu_+^2}{\mu_+^2+\mu_-^2}
+\end{equation}
+%
+\item $Q<0$ (Byrd \& Friedman 1954, eq [218.00])
+%
+\begin{equation}
+\Theta(\mu)=a^2(\mu^2-\mu_{-}^2)(\mu_{+}^2-\mu^2)~~~~( \mu_-^2\leq \mu^2 \leq \mu_+^2)
+\end{equation}
+%
+\begin{equation}
+ \mu_{\pm}^2=\frac{1}{2a^2}\left\{\left(|Q|+a^2-\lambda^2\right)
+\pm\left[\left(|Q|+a^2-\lambda^2\right)^2-4a^2|Q|\right]^{1/2}\right\}
+\end{equation}
+%
+\begin{equation}
+\int_{\mu}^{\mu_+}\frac{d\mu}{\sqrt{\Theta(\mu)}}
+=\frac{1}{a\mu_+}sn^{-1}\left(\left.\sqrt{\frac{\mu_+^2-\mu^2}{\mu_+^2-\mu_-^2}}\right|m_\mu\right)
+\end{equation}
+where
+\begin{equation}
+ m_\mu=\frac{\mu_+^2-\mu_-^2}{\mu_+^2}
+\end{equation}
+\end{enumerate}
+%%
+%%
+\section{TeV Trajectory}
+\begin{equation}
+\tau_r=\pm\int_{r_e}^{\infty}\frac{dr}{\sqrt{R(r)}}=\pm\int_{\mu_e}^{\mu_{obs}}\frac{d\mu}{\sqrt{\Theta(\mu)}}
+=\tau_\mu
+\end{equation}
+where
+\begin{equation}
+R(r)=r^4+(a^2-\lambda^2-Q)r^2+2[Q+(\lambda-a)^2]r-a^2Q
+\end{equation}
+\begin{equation}
+\Theta(\mu)=Q+(a^2-\lambda^2-Q)\mu^2-a^2\mu^4
+\end{equation}
+Now we know the initial condition $r_e$, $\mu_{\rm e}$, $\mu_{\rm obs}$ and asume $\alpha=0$ (that is to say $\lambda=0$), we need solve the $\beta$ to calculate another constant of motion $Q=\beta^2+(\alpha^2-a^2)\cos^2\theta_{\rm obs}$.
+\subsection{Calculating $\tau_\mu$}
+\begin{eqnarray}
+ \tau_\mu=\int_{\mu_e}^{\mu_{\rm obs}}\frac{d\mu}{\sqrt{\Theta(\mu)}}
+&&=\int_{\mu_e}^{\mu_{+}}\frac{d\mu}{\sqrt{\Theta(\mu)}}-
+\int_{\mu_{\rm obs}}^{\mu_{+}}\frac{d\mu}{\sqrt{\Theta(\mu)}}~~~~~~\text{without turning point}\\
+&&=\int_{\mu_e}^{\mu_{+}}\frac{d\mu}{\sqrt{\Theta(\mu)}}+
+\int_{\mu_{\rm obs}}^{\mu_{+}}\frac{d\mu}{\sqrt{\Theta(\mu)}}~~~~~~\text{with turning point}
+\end{eqnarray}
+
+\subsection{Solving $r_{e}$ Given $\tau_\mu$}
+\begin{eqnarray}
+ \tau_r=\int_{r_e}^{\infty}\frac{dr}{\sqrt{R}}&&=\int_{r_+}^{\infty}\frac{dr}{\sqrt{R}}+
+\int_{r_+}^{r_e}\frac{dr}{\sqrt{R}}=\tau_{\infty}+\tau_{e}~~~~~\text{with turning point}\\
+&&=\int_{r_+}^{\infty}\frac{dr}{\sqrt{R}}-\int_{r_+}^{r_e}\frac{dr}{\sqrt{R}}=\tau_{\infty}-\tau_{e}~~~~~\text{without turning point}
+\end{eqnarray}
+where $r_+=r_1$ for Case I, $r_+=r_3$ for Case II and $r_+=r_0$ for Case III.
+\begin{enumerate}
+ \item Case I: four real roots.\\
+\begin{equation}
+\tau_\infty=\frac{2}{\sqrt{(r_1-r_3)(r_2-r_4)}}
+sn^{-1}\left(\left.\sqrt{\frac{r_2-r_4}{r_1-r_4}}\right|m_4\right)
+\end{equation}
+\begin{equation}
+\tau_e=\frac{2}{\sqrt{(r_1-r_3)(r_2-r_4)}}
+sn^{-1}\left[\left.\frac{(r_2-r_4)(r_e-r_1)}{(r_1-r_4)(r_e-r_2)}\right|m_4\right]
+\end{equation}
+The solution is
+\begin{equation}
+r_e=\frac{r_1(r_2-r_4)-r_2(r_1-r_4)sn^2(\xi_4|m_4)}{(r_2-r_4)-(r_1-r_4)sn^2(\xi_4|m_4)}
+\end{equation}
+where
+\begin{equation}
+ \xi_4=\frac{1}{2}(\tau_\mu-\tau_\infty)\sqrt{(r_1-r_3)(r_2-r_4)}
+\end{equation}
+%
+\item Case II: two real roots and two complex roots.\\
+\begin{equation}
+ \tau_{\infty}=\frac{1}{\sqrt{AB}}cn^{-1}\left(\left.\frac{A-B}{A+B}\right|m_2\right)
+\end{equation}
+The solution is 
+\begin{equation}
+ r_e=\frac{r_4A-r_3B-(r_4A+r_3B)cn(\xi_2|m_2)}{(A-B)-(A+B)cn(\xi_2|m_2)}
+\end{equation}
+where
+\begin{equation}
+ \xi_2=(\tau_\mu-\tau_\infty)\sqrt{AB}
+\end{equation}
+\item Case III: four complex roots.\\
+\begin{equation}
+ \tau_{\infty}=\frac{2}{A+B}tn^{-1}\left(\left.-\frac{1}{g_1}\right|m_c\right)
+\end{equation}
+\begin{equation}
+ \tau_{e}=\frac{2}{A+B}tn^{-1}\left(\left.\frac{r_e-u_1+v_1g_1}{v_1+g_1u_1-g_1r_e}\right|m_c\right)
+\end{equation}
+The solution is 
+\begin{equation}
+ r_e=\frac{u_1-v_1g_1+(v_1+u_1g_1)tn(\xi_c|m_c)}{1+g_1tn(\xi_c|m_c)}
+\end{equation}
+where
+\begin{equation}
+ \xi_c=\frac{1}{2}(\tau_\mu-\tau_{\infty})(A+B)
+\end{equation}
+\end{enumerate}
+\subsection{Solving $\beta$}
+Specifying a $\beta$, then we get $\lambda$ and $Q$. We can calculate directly $\tau_\mu$, and go on to solve the $r_e$. If $r_e$ matches the initial condition, we find out the proper $\beta$. 
+\chapter{Mathematical functions }
+\section{Bessel functions}
+The approximation of Bessel functions for large $x$ is
+\begin{equation}
+ K_{n}(x)\approx\sqrt{\frac{\pi}{2x}}e^{-x}\left(1+\frac{4n^2-1}{8x}+...\right)
+\end{equation}
+Therefore for small $\theta$,
+\begin{equation}
+K_3(1/\theta)=\sqrt{\frac{\pi}{2}}\theta^{1/2}e^{-1/\theta}\left(1+\frac{35\theta}{8}\right),
+\end{equation}
+\begin{equation}
+K_2(1/\theta)=\sqrt{\frac{\pi}{2}}\theta^{1/2}e^{-1/\theta}\left(1+\frac{15\theta}{8}\right),
+\end{equation}
+\begin{equation}
+K_1(1/\theta)=\sqrt{\frac{\pi}{2}}\theta^{1/2}e^{-1/\theta}\left(1+\frac{3\theta}{8}\right),
+\end{equation}
+and
+\begin{equation}
+\gamma=1+\theta\left[\frac{3K_3(1/\theta)+K_1(1/\theta)}{4K_2(1/\theta)}-1\right]^{-1}=1+\frac{8+15\theta}{12}.
+\end{equation}
+
+\end{document}
