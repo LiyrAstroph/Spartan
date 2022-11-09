@@ -23,7 +23,7 @@ c***********************************
      &,      drdlog
       
       nfin=10
-      open(unit=nfin,file='../data/datain.txt',status='unknown')
+      open(unit=nfin,file='./data/datain.txt',status='unknown')
       read(nfin,adaf)
       read(nfin,odeint)
       read(nfin,auto)

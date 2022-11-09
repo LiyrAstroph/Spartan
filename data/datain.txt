@@ -1,10 +1,10 @@
 &ADAF 
- M = 0.7d8, 
- MDOT = 0.7d-2,
+ M = 3.2d9, 
+ MDOT =10.0d-5,
  ALPHA =  0.1d0, 
  BETA =  0.5d0, 
  GAMMAA =  1.6666666666667d0,
- ASTAR = 0.0d0,
+ ASTAR = 0.7d0,
  VISF = 1.0d-1/
  
 &ODEINT
@@ -18,7 +18,7 @@
  DRSTEP_MAX=1.0d-2/
  
 &AUTO
- LINMAX = 2.5d0,
- LINMIN = 0.5d0/
+ LINMAX = 1.2990d0,
+ LINMIN = 1.2980d0/
 &OBS
  THETA_OBS = 30.0d0/

@@ -21,7 +21,7 @@ c***********************************
       integer ird,inu
       
       
-      open(unit=30,file="../data/spectrum.dat",form="formatted")
+      open(unit=30,file="./data/spectrum.dat",form="formatted")
       write(*,*)nu_min,nu_max
 
       omig_in_min=dlog10(h*nu_min/mec2)
@@ -150,7 +150,7 @@ c output photon distribution:flux_comp
      &                     *2.0
       end do                             
 
-      open(unit=85,file="../data/spec/spec"//char(ird/100+48)//
+      open(unit=85,file="./data/spec/spec"//char(ird/100+48)//
      &char(mod(ird,100)/10+48)//char(mod(ird,10)+48)//".txt",
      &form="formatted")
       do inu=1,nnu

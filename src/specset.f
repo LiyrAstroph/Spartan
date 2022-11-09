@@ -29,7 +29,7 @@ c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       implicit none
       include 'specvar.f'
       
-      call system('rm ../data/spec/spec*')
+      call system('rm ./data/spec/spec*')
                   
       call initial()
       call spectrum()
@@ -69,11 +69,11 @@ c***********************************
      
       call gauleg(-1.0d0,1.0d0,xleg,wleg,nleg)
 
-      open(unit=50,file='../data/datain.txt',status='unknown')
+      open(unit=50,file='./data/datain.txt',status='unknown')
       read(50,adaf)
       close(50) 
       write(*,adaf)
-      open(unit=50,file='../data/nrows.txt',status='unknown')
+      open(unit=50,file='./data/nrows.txt',status='unknown')
       read(50,nrows) 
       close(50)
       write(*,nrows)
@@ -89,7 +89,7 @@ c      rdin=0.5d3
       flux_comp(i)=0.0d0
       end do
    
-      open(unit=10,file='../data/adaf.dat',form='formatted'
+      open(unit=10,file='./data/adaf.dat',form='formatted'
      &,status='unknown')
       
       j=0

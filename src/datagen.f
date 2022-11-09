@@ -17,10 +17,10 @@ c=======================================================================
       integer ni,i,nend
       namelist/nrows/nend
                   
-      open(unit=12,file='../data/adaf.dat',status='unknown')
-      open(unit=14,file='../data/nrows.txt',status='unknown')
-      open(unit=18,file='../data/sol_for_spec.dat',status='unknown')
-      open(unit=20,file='../data/rdisk.dat',status='unknown')
+      open(unit=12,file='./data/adaf.dat',status='unknown')
+      open(unit=14,file='./data/nrows.txt',status='unknown')
+      open(unit=18,file='./data/sol_for_spec.dat',status='unknown')
+      open(unit=20,file='./data/rdisk.dat',status='unknown')
 
       rmax=1.0d3
       rmin=(1.0d0+dsqrt(1.0d0-astar*astar))/2.0d0+0.20d0

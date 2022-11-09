@@ -50,18 +50,18 @@ c rewrite the interpolation. Thanks Prof.Yuan's help.
 
       real*8 mdot,gammaa,visf
       namelist/adaf/m,mdot,alpha,beta,gammaa,astar,visf
-      open(unit=8,file='../data/datain.txt',status='old')
+      open(unit=8,file='./data/datain.txt',status='old')
       read(8,adaf)
       write(*,adaf)
       read(8,obs)
       write(*,obs)
       close(8)
       pause
-      open(unit=10,file='../data/specobs.dat',status='unknown')
+      open(unit=10,file='./data/specobs.dat',status='unknown')
 
       aspin=astar/2.0d0
       rmin=(1.0d0+sqrt(1.0d0-astar*astar))/2.0d0+0.2d0 
-      rmax=2.5d1 ! 25Rs          
+      rmax=1.0d3 ! 1000Rs          
       rs=2.95d5*m
       
       call read_sol()
@@ -284,7 +284,7 @@ c********************************************************
 
       do ird=1,nrd
       
-      open(unit=40,file="../data/spec/spec"//char(ird/100+48)//
+      open(unit=40,file="./data/spec/spec"//char(ird/100+48)//
      &char(mod(ird,100)/10+48)//char(mod(ird,10)+48)//".txt",
      &form="formatted",status='old')
      
@@ -317,7 +317,7 @@ c********************************************************
       integer i
       real*8 rmin
       rmin=(1.0d0+sqrt(1.0d0-astar*astar))/2.0d0+0.2d0
-      open(unit=20,file='../data/sol_for_spec.dat',status='old')
+      open(unit=20,file='./data/sol_for_spec.dat',status='old')
       do i=1,nobs
       read(20,*,end=50)rd(i),gamr(i),gamp(i),omega(i),v(i)
       if(rd(i).lt.rmin)goto 50

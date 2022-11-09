@@ -148,7 +148,7 @@ c for rk
       real*8 mach,nep,nip,Lamb,Qrad,heigp,tip,tep,rhop,hstep
      &,      factor,v2cs,num,den
       real*8 csp,radcool
-      open(unit=60,file='../data/soltot.dat',status='unknown')                  
+      open(unit=60,file='./data/soltot.dat',status='unknown')                  
       irdi=1
       irdo=ndim
       
