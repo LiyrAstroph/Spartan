@@ -23,14 +23,27 @@ obtain the height-integrated equation sets.
                      How to use this code
 under the command shell, type
 
-cd src
-make
-./disk
-./spec
-./obs
+FC=gfortran make           # compile the code 
+./disk                     # solve disk structure
+./spec                     # cal intrinsic spectrum
+./obs                      # cal observed spectrum
 
-Note that your system must have installed g77 compiler.
-The output data sees in data/
+Note that your system must have installed Fortran 77/90 compiler. Change 
+"gfortran" to the corresponding compiler in your system.
+
+The input option sees in data/datain.txt.
+
+The output data sees in data/, including
+
+spectrum.dat               # intrinsic spectrum
+specobs.dat                # observed spectrum
+soltot.dat                 # disk solution
+
+sol_for_spec.dat           # disk solution used for cal spectrum
+                           # with coarser radius grid
+
+spec/specxxx.txt           # spectrum at each radius
+                           # see radius at sol_for_spec.dat
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
                          log file
