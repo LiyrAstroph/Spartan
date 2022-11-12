@@ -50,30 +50,35 @@ The output data sees in data/, including
 Reference
 =========
 If you use this code, please cite our paper 
-`Li et al. 2008, ApJ, 699, 513 <https://ui.adsabs.harvard.edu/abs/2009ApJ...699..513L/abstract>`_
+`Li et al. 2008, ApJ, 699, 513 <https://ui.adsabs.harvard.edu/abs/2009ApJ...699..513L/abstract>`_.
 
 log
 ========
 
-Wed, Mar 12, 2008
-tag: auto_me
+* **Wed, Mar 12, 2008**
 
-Try to make the code operate automatically, i.e. self-consistently determine
-the proper the lin once the boundary are given.
+  tag: auto_me  
 
-Thu, Mar 13, 2008
-tag: autos  auto + sonic
+  Try to make the code operate automatically, i.e. self-consistently determine
+  the proper the lin once the boundary are given.
 
-use transonic point to automate the calculation. I find that for larger lin, 
-the slope of surface density change from positive to negative, while for
-smaller lin, it is just reverse. Also, the correct solution must be transonic. 
+* **Thu, Mar 13, 2008**
 
-Tue, May 6, 2008
-tag: theta_obs set theta_obs as an input parameter in datain.txt.
+  tag: autos  auto + sonic
 
-Wed, Aug 27, 2008
-A serious error foud. The factor 0.5 was missed in normalization (By Prof.Yuan).
+  use transonic point to automate the calculation. I find that for larger lin, 
+  the slope of surface density change from positive to negative, while for
+  smaller lin, it is just reverse. Also, the correct solution must be transonic. 
 
-Wed, Sep 3rd, 2008
-1. Rewrite the spectrum code to improve the precision and computational speed.
-2. Rewrite the obs code using Prof. Yuan's subroutines.
+* **Tue, May 6, 2008**
+
+  tag: theta_obs set theta_obs as an input parameter in datain.txt.
+
+* **Wed, Aug 27, 2008**
+
+  A serious error foud. The factor 0.5 was missed in normalization (By Prof.Yuan).
+
+* **Wed, Sep 3rd, 2008**
+
+  1. Rewrite the spectrum code to improve the precision and computational speed.
+  2. Rewrite the obs code using Prof. Yuan's subroutines.
