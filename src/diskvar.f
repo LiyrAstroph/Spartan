@@ -44,5 +44,6 @@ c structure of ADAF.
       common/auto/nums,dens,rson,sonic_num,sonic_den,linmax,linmin,nstep
      &,            is_sonic
       namelist/auto/linmax,linmin
-      
-       
+
+      integer nfenergy
+      parameter(nfenergy=80)    

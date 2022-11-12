@@ -86,7 +86,7 @@ c------------------------------------------------------------------------
       nip=rhop/mui/mp
       
       call flux_eng(tep,tip,rhop,heigp,csp*c,brem,syn,comp,tot)
-      write(20,*)log10(rd(ird)),log10(2.0*pi*rd(ird)*rd(ird)*tot)
+      write(nfenergy,*)log10(rd(ird)),log10(2.0*pi*rd(ird)*rd(ird)*tot)
      &                  +2.0*log10(rs)
      &,          log10(2.0*pi*rd(ird)*rd(ird)*brem)+2.0*log10(rs)
      &,          log10(2.0*pi*rd(ird)*rd(ird)*syn)+2.0*log10(rs)

@@ -102,8 +102,10 @@ c      return
       if(dabs(linmax-linmin).gt.1.0d-4)goto  130
       
       flag=.true.
+      open(unit=nfenergy, file='./data/energy.dat', status='unknown')
 c      lin=lin+0.001d0
       call solve(flag)
+      close(nfenergy)
            
       write(*,'(a,f10.6)')"Preferred Lin=",lin
       end subroutine autocal
