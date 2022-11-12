@@ -1,26 +1,24 @@
 ************************************************************************
                             Spartan
 ************************************************************************
-Spectrum of advection-dominated accretion flow in optically thin case.
-Sp          a                      r t                 a       n
+
+**Sp**ectrum of **a**dvection-dominated acc**r**e**t**ion flow in optic**a**lly thi**n** case.
 
 This name is to memorialize the film
-----------------------
-300 Spartans
-----------------------
+
+  300 Spartans
+
 in which 300 Spartans profoundly impressed upon me with their 
 bravery and persistence.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This code aims to calculate the spectrum of optically thin ADAF by 
 solving the disk equation numerically. It adopt the notable geometrically
 thin assumption so as to apply the integration over the height, i.e. to
 obtain the height-integrated equation sets.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                     How to use this code
+How to use this code
+====================
 under the command shell, type
 
 FC=gfortran make           # compile the code 
@@ -44,9 +42,14 @@ sol_for_spec.dat           # disk solution used for cal spectrum
 
 spec/specxxx.txt           # spectrum at each radius
                            # see radius at sol_for_spec.dat
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-                         log file
+Reference
+=========
+If you use this code, please cite our paper 
+`Li et al. 2008, ApJ, 699, 513 <https://ui.adsabs.harvard.edu/abs/2009ApJ...699..513L/abstract>`_
+
+log
+========
 Wed, Mar 12, 2008
 tag: auto_me
 
