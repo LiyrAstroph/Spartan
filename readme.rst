@@ -31,7 +31,7 @@ under the command shell, type
 Note that your system must have installed Fortran 77/90 compiler. Change 
 "**gfortran**" to the corresponding compiler in your system.
 
-The input option sees in data/datain.txt.
+The input option sees in **data/datain.txt**.
 
 The output data sees in data/, including
 
@@ -47,10 +47,14 @@ The output data sees in data/, including
     spec/specxxx.txt           # spectrum at each radius
                                # see radius at sol_for_spec.dat
 
+Plotting
+========
+See the Juypter notebook **plot_spartan.ipynb** in the folder **data/** for how to use and visualize the outputs.
+
 Reference
 =========
 If you use this code, please cite our paper 
-`Li et al. 2008, ApJ, 699, 513 <https://ui.adsabs.harvard.edu/abs/2009ApJ...699..513L/abstract>`_.
+`Li et al. 2009, ApJ, 699, 513 <https://ui.adsabs.harvard.edu/abs/2009ApJ...699..513L/abstract>`_.
 
 log
 ========
