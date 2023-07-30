@@ -5,7 +5,7 @@
  BETA =  0.5d0, 
  GAMMAA =  1.6666666666667d0,
  ASTAR = 0.7d0,
- VISF = 1.0d-1/
+ VISF = 1.0d-3/
  
 &ODEINT
  NNU =  400,
