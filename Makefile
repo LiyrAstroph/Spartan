@@ -1,5 +1,7 @@
 all:disk spec obs
 
+FC = gfortran
+
 SRC = ./src
 
 disk:$(SRC)/const.f $(SRC)/specfun.f $(SRC)/diskvar.f $(SRC)/diskrad.f $(SRC)/disksol.f \
